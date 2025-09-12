@@ -23,4 +23,10 @@ jobs:
           path: ~/.m2/repository
           key: maven-${{ hashFiles('**/pom.xml') }}
       - run: mvn test
-      - run: docker build . --tag hej-github:latest
+      - run: docker build . --tag hej-github:test
+      - run: |
+          docker run -d --name test-container -p 8080:8080 hej-github:test
+          sleep 30
+          curl -f http://localhost:8080/healthz || exit 1
+          docker stop test-container
+          docker rm test-container
