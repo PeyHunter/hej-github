@@ -1,0 +1,26 @@
+name: Java CI with Docker
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  docker-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Build Docker image
+      - run: docker build -t myapp:test .
+
+      # Run container and test health
+      - run: |
+          docker run -d --name test-container -p 8080:8080 myapp:test
+          sleep 30
+          curl -f http://localhost:8080/healthz || exit 1
+          docker stop test-container
+          docker rm test-container
