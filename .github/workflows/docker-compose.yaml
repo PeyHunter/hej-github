@@ -11,7 +11,7 @@ jobs:
   compose-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
 
       - name: Start services with docker compose
         run: docker compose up -d
