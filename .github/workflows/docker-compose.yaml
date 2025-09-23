@@ -1,0 +1,29 @@
+name: Docker Compose Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  compose-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Start services with docker compose
+        run: docker compose up -d
+
+      - name: Wait for services to be ready
+        run: sleep 45
+
+      - name: Test app health endpoint
+        run: curl -f http://localhost:8080/healthz
+
+      - name: Test database connection (example)
+        run: curl -f http://localhost:8080/api/users || exit 1
+
+      - name: Shut down services
+        run: docker compose down
